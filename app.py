@@ -78,19 +78,21 @@ def show_prediction_result(predicted_class, confidence, all_predictions, image):
     with col2:
         st.subheader("🎯 Hasil Prediksi")
 
-        if predicted_class == UNKNOWN_LABEL:
+        if predicted_class == "Tidak Diketahui":
             st.markdown("### ❓ Tidak Diketahui")
             st.error("⚠️ Objek tidak termasuk daun herbal dalam dataset")
             st.metric("Confidence Tertinggi", f"{confidence:.2f}%")
             st.info(
-                "Sistem menerapkan mekanisme penolakan prediksi "
-                "untuk citra di luar domain pelatihan (out-of-distribution)."
+                "Sistem menolak prediksi karena citra berada di luar "
+                "domain data pelatihan (out-of-distribution)."
             )
             return
 
         st.markdown(f"### 🌿 {predicted_class}")
         st.metric("Tingkat Keyakinan", f"{confidence:.2f}%")
-        st.progress(confidence / 100)
+
+        # ✅ FIX DI SINI
+        st.progress(int(confidence))
 
         if confidence >= 80:
             st.success("✅ Prediksi sangat yakin")
@@ -108,6 +110,7 @@ def show_prediction_result(predicted_class, confidence, all_predictions, image):
     }).sort_values("Probabilitas (%)")
 
     st.bar_chart(prob_df.set_index("Tanaman"))
+
 
 # ==================== SIDEBAR ====================
 with st.sidebar:
@@ -174,3 +177,4 @@ st.markdown(
     "<p style='text-align:center;color:gray;'>© 2025 - Herbal Leaf Classifier</p>",
     unsafe_allow_html=True
 )
+
