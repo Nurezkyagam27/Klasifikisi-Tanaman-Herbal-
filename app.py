@@ -223,6 +223,10 @@ def load_trained_model():
     except:
         model = load_model("daun-herbal.h5")
     return model
+    
+CONFIDENCE_THRESHOLD = 70.0   # %
+ENTROPY_THRESHOLD = 1.5
+UNKNOWN_LABEL = "Tidak Diketahui"
 
 def preprocess_image(image):
     """Preprocessing gambar sesuai dengan training"""
@@ -525,6 +529,7 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
 
