@@ -5,16 +5,16 @@ from PIL import Image
 import numpy as np
 import pandas as pd
 
+CONFIDENCE_THRESHOLD = 70.0   # %
+ENTROPY_THRESHOLD = 1.5
+UNKNOWN_LABEL = "Tidak Diketahui"
+
 # Konfigurasi halaman
 st.set_page_config(
     page_title="Klasifikasi Daun Herbal",
     page_icon="🌿",
     layout="wide"
 )
-
-CONFIDENCE_THRESHOLD = 70.0   # %
-ENTROPY_THRESHOLD = 1.5
-UNKNOWN_LABEL = "Tidak Diketahui"
 
 
 # Daftar nama kelas (sesuai urutan folder di dataset)
@@ -254,12 +254,27 @@ def predict_image(model, image):
 
     # LOGIKA UNKNOWN
     if confidence < CONFIDENCE_THRESHOLD or entropy > ENTROPY_THRESHOLD:
-        return UNKNOWN_LABEL, confidence, predictions
+    return UNKNOWN_LABEL, confidence, predictions
 
     return CLASS_NAMES[predicted_class_idx], confidence, predictions
 
-    
-    st.markdown("---")
+
+def show_prediction_result(predicted_class, confidence, all_predictions, image):
+    col1, col2 = st.columns(2)
+
+    with col1:
+        st.subheader("🖼️ Gambar Input")
+        st.image(image, use_container_width=True)
+
+    with col2:
+        st.subheader("🎯 Hasil Prediksi")
+
+    if predicted_class == UNKNOWN_LABEL:
+            st.markdown("### ❓ Tidak Diketahui")
+            st.error("⚠️ Gambar tidak dikenali sebagai daun herbal dalam dataset")
+            st.metric("Tingkat Keyakinan Tertinggi", f"{confidence:.2f}%")
+    return
+
     
     # Manfaat dan cara penggunaan tanaman
     col_m, col_c = st.columns(2)
