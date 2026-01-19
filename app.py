@@ -12,6 +12,11 @@ st.set_page_config(
     layout="wide"
 )
 
+CONFIDENCE_THRESHOLD = 70.0   # %
+ENTROPY_THRESHOLD = 1.5
+UNKNOWN_LABEL = "Tidak Diketahui"
+
+
 # Daftar nama kelas (sesuai urutan folder di dataset)
 CLASS_NAMES = [
     "Belimbing Wuluh",
@@ -237,37 +242,22 @@ def preprocess_image(image):
     return img_array
 
 def predict_image(model, image):
-    """Prediksi kelas gambar"""
     processed_image = preprocess_image(image)
-    predictions = model.predict(processed_image, verbose=0)
-    predicted_class_idx = np.argmax(predictions[0])
-    confidence = predictions[0][predicted_class_idx] * 100
-    return CLASS_NAMES[predicted_class_idx], confidence, predictions[0]
+    predictions = model.predict(processed_image, verbose=0)[0]
 
-def show_prediction_result(predicted_class, confidence, all_predictions, image):
-    """Menampilkan hasil prediksi"""
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.subheader("🖼️ Gambar Input")
-        st.image(image, use_container_width=True)
-    
-    with col2:
-        st.subheader("🎯 Hasil Prediksi")
-        info = INFO_HERBAL[predicted_class]
-        st.markdown(f"### {info['emoji']} {predicted_class}")
-        st.caption(f"*{info['nama_latin']}*")
-        
-        # Progress bar untuk confidence
-        st.metric(label="Tingkat Keyakinan", value=f"{confidence:.2f}%")
-        st.progress(float(confidence / 100))
-        
-        if confidence >= 80:
-            st.success("✅ Prediksi dengan keyakinan tinggi")
-        elif confidence >= 50:
-            st.warning("⚠️ Prediksi dengan keyakinan sedang")
-        else:
-            st.error("❌ Prediksi dengan keyakinan rendah")
+    # Softmax sudah dari model, ambil max
+    predicted_class_idx = np.argmax(predictions)
+    confidence = predictions[predicted_class_idx] * 100
+
+    # Hitung entropy
+    entropy = -np.sum(predictions * np.log(predictions + 1e-8))
+
+    # LOGIKA UNKNOWN
+    if confidence < CONFIDENCE_THRESHOLD or entropy > ENTROPY_THRESHOLD:
+        return UNKNOWN_LABEL, confidence, predictions
+
+    return CLASS_NAMES[predicted_class_idx], confidence, predictions
+
     
     st.markdown("---")
     
@@ -520,5 +510,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
 
