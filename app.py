@@ -305,7 +305,7 @@ with st.sidebar:
     # Menu navigasi
     menu = st.radio(
         "📌 Menu Navigasi",
-        ["🏠 Beranda", "🔍 Prediksi", "📚 Tentang"],
+        ["🏠 Beranda", "🔍 Prediksi", "📚 Informasi"],
         index=0
     )
     
@@ -329,7 +329,7 @@ with st.sidebar:
     )
 
 # ==================== HOME PAGE ====================
-if menu == "🏠 Home":
+if menu == "🏠 Beranda":
     st.title("🌿 Klasifikasi Daun Tanaman Herbal Indonesia")
     st.markdown("---")
     
@@ -383,7 +383,7 @@ if menu == "🏠 Home":
         st.metric("Framework", "TensorFlow")
 
 # ==================== PREDICT PAGE ====================
-elif menu == "🔍 Predict":
+elif menu == "🔍 Prediksi":
     st.title("🔍 Prediksi Daun Tanaman Herbal")
     st.markdown("---")
     
@@ -440,7 +440,7 @@ elif menu == "🔍 Predict":
             st.info("📷 Klik tombol kamera untuk mengambil foto daun")
 
 # ==================== ABOUT PAGE ====================
-elif menu == "📚 About":
+elif menu == "📚 Informasi":
     st.title("📚 Informasi Tanaman Herbal")
     st.markdown("---")
     
@@ -520,4 +520,5 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
+
 
