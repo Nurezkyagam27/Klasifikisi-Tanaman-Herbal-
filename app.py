@@ -305,7 +305,7 @@ with st.sidebar:
     # Menu navigasi
     menu = st.radio(
         "📌 Menu Navigasi",
-        ["🏠 Home", "🔍 Predict", "📚 About"],
+        ["🏠 Beranda", "🔍 Prediksi", "📚 Tentang"],
         index=0
     )
     
@@ -515,8 +515,9 @@ st.markdown(
     """
     <div style='text-align: center; color: gray;'>
         <p>🌿 Klasifikasi Daun Tanaman Herbal dengan MobileNetV2</p>
-        <p style='font-size: 12px;'>© 2025 - Herbal Leaf Classifier</p>
+        <p style='font-size: 12px;'>© 2026 - Herbal Leaf Classifier</p>
     </div>
     """,
     unsafe_allow_html=True
 )
+
