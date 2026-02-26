@@ -220,22 +220,21 @@ def load_trained_model():
     return model
 
 def preprocess_image(image):
+    """Preprocessing gambar sesuai dengan training"""
+    # Resize ke 224x224
     image = image.resize((224, 224))
+    # Konversi ke array
     img_array = np.array(image)
-
-    # Pastikan RGB 3 channel
+    # Pastikan 3 channel (RGB)
     if len(img_array.shape) == 2:
         img_array = np.stack((img_array,) * 3, axis=-1)
     elif img_array.shape[2] == 4:
         img_array = img_array[:, :, :3]
-
+    # Normalisasi (rescale 1/255)
+    img_array = img_array / 255.0
+    # Tambah dimensi batch
     img_array = np.expand_dims(img_array, axis=0)
-
-    # 🔥 WAJIB SAMA SEPERTI TRAINING
-    img_array = preprocess_input(img_array)
-
     return img_array
-
 
 def predict_image(model, image):
     """Prediksi kelas gambar"""
