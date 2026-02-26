@@ -4,8 +4,6 @@ from tensorflow.keras.models import load_model
 from PIL import Image
 import numpy as np
 import pandas as pd
-from tensorflow.keras.applications.mobilenet_v2 import preprocess_input
-
 
 # Konfigurasi halaman
 st.set_page_config(
@@ -222,22 +220,21 @@ def load_trained_model():
     return model
 
 def preprocess_image(image):
+    """Preprocessing gambar sesuai dengan training"""
+    # Resize ke 224x224
     image = image.resize((224, 224))
+    # Konversi ke array
     img_array = np.array(image)
-
-    # Pastikan RGB 3 channel
+    # Pastikan 3 channel (RGB)
     if len(img_array.shape) == 2:
         img_array = np.stack((img_array,) * 3, axis=-1)
     elif img_array.shape[2] == 4:
         img_array = img_array[:, :, :3]
-
+    # Normalisasi (rescale 1/255)
+    img_array = img_array / 255.0
+    # Tambah dimensi batch
     img_array = np.expand_dims(img_array, axis=0)
-
-    # 🔥 WAJIB SAMA SEPERTI TRAINING
-    img_array = preprocess_input(img_array)
-
     return img_array
-
 
 def predict_image(model, image):
     """Prediksi kelas gambar"""
@@ -330,22 +327,7 @@ with st.sidebar:
         """,
         unsafe_allow_html=True
     )
-st.title("Klasifikasi Daun Herbal 🌿")
 
-uploaded_file = st.file_uploader("Upload gambar daun", type=["jpg", "png", "jpeg"])
-
-if uploaded_file is not None:
-    image = Image.open(uploaded_file).convert("RGB")
-    st.image(image, caption="Gambar yang diupload", use_column_width=True)
-
-    processed = preprocess_image(image)
-    prediction = model.predict(processed)
-
-    predicted_class = CLASS_NAMES[np.argmax(prediction)]
-    confidence = np.max(prediction) * 100
-
-    st.subheader(f"Hasil Prediksi: {predicted_class}")
-    st.write(f"Tingkat Keyakinan: {confidence:.2f}%")
 # ==================== HOME PAGE ====================
 if menu == "🏠 Beranda":
     st.title("🌿 Klasifikasi Daun Tanaman Herbal Indonesia")
@@ -538,7 +520,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )
-
 
 
 
